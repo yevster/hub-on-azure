@@ -32,14 +32,19 @@
         "type": "string",
         "defaultValue": "14.04.2-LTS",
         "metadata": {
-          "description": "Image SKU"
-        }
+          "description": "The Ubuntu version for deploying the Hub via Docker"
+        },
+        "allowedValues": [
+            "14.04.4-LTS",
+            "15.10",
+            "16.04.0-LTS"
+        ]
       },
       "vmSize": {
         "type": "string",
         "defaultValue": "Standard_A0",
          "metadata": {
-          "description": "VM Size"
+          "description": "VM Size for the Hub host"
         }
       },
       "vmName": {
@@ -79,23 +84,18 @@
       },
       {
         "type": "Microsoft.Compute/virtualMachines/extensions",
-        "name": "[concat(parameters('vmName'),'/installhub')]",
-        "apiVersion": "2015-05-01-preview",
+        "name": "[concat(parameters('vmName'),'/installdocker')]",
+        "apiVersion": "2017-03-30",
         "location": "[resourceGroup().location]",
         "dependsOn": [
           "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
         ],
         "properties": {
           "publisher": "Microsoft.Azure.Extensions",
-          "type": "CustomScript",
-          "typeHandlerVersion": "2.0",
+          "type": "DockerExtension",
+          "typeHandlerVersion": "1.0",
           "autoUpgradeMinorVersion": true,
-          "settings": {
-            "fileUris": [
-              "https://raw.githubusercontent.com/valancej/hub-on-azure/master/install-hub.sh"
-            ],
-            "commandToExecute": "sh install-hub.sh"
-          }
+          "settings": {}
         }
       }
     ]
