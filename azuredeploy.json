@@ -5,13 +5,13 @@
       "adminUsername": {
         "type": "string",
         "metadata": {
-          "description": "Admin Username"
+          "description": "User name for the Virtual Machine."
         }
       },
       "adminPassword": {
         "type": "securestring",
         "metadata": {
-          "description": "Admin Password"
+          "description": "Password for the Virtual Machine."
         }
       },
       "dnsLabelPrefix": {
@@ -20,166 +20,130 @@
           "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
         }
       },
-      "imagePublisher": {
-        "type": "string",
-        "defaultValue": "Canonical",
-        "metadata": {
-          "description": "Image Publisher"
-        }
-      },
-      "imageOffer": {
-        "type": "string",
-        "defaultValue": "UbuntuServer",
-        "metadata": {
-          "description": "Image Offer"
-        }
-      },
-      "imageSKU": {
+      "ubuntuOSVersion": {
         "type": "string",
         "defaultValue": "16.04.0-LTS",
-        "metadata": {
-          "description": "The Ubuntu version for deploying the Hub via Docker"
-        },
         "allowedValues": [
-            "14.04.4-LTS",
-            "15.10",
-            "16.04.0-LTS"
-        ]
-      },
-      "vmSize": {
-        "type": "string",
-        "defaultValue": "Standard_A0",
-         "metadata": {
-          "description": "VM Size for the Hub host"
-        }
-      },
-      "vmName": {
-        "type": "string",
-        "defaultValue": "BDSUbuntuVM",
+          "12.04.5-LTS",
+          "14.04.5-LTS",
+          "15.10",
+          "16.04.0-LTS"
+        ],
         "metadata": {
-          "description": "Vm Name"
+          "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
         }
       }
     },
     "variables": {
-        "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
-        "imagePublisher": "Canonical",
-        "imageOffer": "UbuntuServer",
-        "nicName": "myVMNic",
-        "addressPrefix": "10.0.0.0/16",
-        "subnetName": "Subnet",
-        "subnetPrefix": "10.0.0.0/24",
-        "storageAccountType": "Standard_LRS",
-        "publicIPAddressName": "myPublicIP",
-        "publicIPAddressType": "Dynamic",
-        "vmName": "MyUbuntuVM",
-        "vmSize": "Standard_A1",
-        "virtualNetworkName": "MyVNET",
-        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-        "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]"
+      "imagePublisher": "Canonical",
+      "imageOffer": "UbuntuServer",
+      "nicName": "myVMNic",
+      "addressPrefix": "10.0.0.0/16",
+      "subnetName": "Subnet",
+      "subnetPrefix": "10.0.0.0/24",
+      "publicIPAddressName": "myPublicIP",
+      "publicIPAddressType": "Dynamic",
+      "vmName": "MyUbuntuVM",
+      "vmSize": "Standard_A1",
+      "virtualNetworkName": "MyVNET",
+      "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+      "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]"
     },
-    
     "resources": [
-        {
-            "apiVersion": "2017-04-01",
-            "type": "Microsoft.Network/publicIPAddresses",
-            "name": "[variables('publicIPAddressName')]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-              "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
-              "dnsSettings": {
-                "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+      {
+        "apiVersion": "2017-04-01",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIPAddressName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+          "dnsSettings": {
+            "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+          }
+        }
+      },
+      {
+        "apiVersion": "2017-04-01",
+        "type": "Microsoft.Network/virtualNetworks",
+        "name": "[variables('virtualNetworkName')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "addressSpace": {
+            "addressPrefixes": [
+              "[variables('addressPrefix')]"
+            ]
+          },
+          "subnets": [
+            {
+              "name": "[variables('subnetName')]",
+              "properties": {
+                "addressPrefix": "[variables('subnetPrefix')]"
               }
             }
-          },
-          {
-            "apiVersion": "2017-04-01",
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('virtualNetworkName')]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-              "addressSpace": {
-                "addressPrefixes": [
-                  "[variables('addressPrefix')]"
-                ]
-              },
-              "subnets": [
-                {
-                  "name": "[variables('subnetName')]",
-                  "properties": {
-                    "addressPrefix": "[variables('subnetPrefix')]"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "apiVersion": "2017-04-01",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[variables('nicName')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-              "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
-              "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-            ],
-            "properties": {
-              "ipConfigurations": [
-                {
-                  "name": "ipconfig1",
-                  "properties": {
-                    "privateIPAllocationMethod": "Dynamic",
-                    "publicIPAddress": {
-                      "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-                    },
-                    "subnet": {
-                      "id": "[variables('subnetRef')]"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-        {
-            "apiVersion": "2015-05-01-preview",
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('vmName')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-            ],
-            "properties": {
-            "hardwareProfile": {
-                "vmSize": "[parameters('vmSize')]"
-            },
-            "osProfile": {
-                "computerName": "[parameters('vmName')]",
-                "adminUsername": "[parameters('adminUsername')]",
-                "adminPassword": "[parameters('adminPassword')]"
-            },
-            "storageProfile": {
-                "imageReference": {
-                "publisher": "[parameters('imagePublisher')]",
-                "offer": "[parameters('imageOffer')]",
-                "sku": "[parameters('imageSKU')]",
-                "version": "latest"
-                }
-            }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('vmName'),'/installdocker')]",
-            "apiVersion": "2017-03-30",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
-            ],
-            "properties": {
-            "publisher": "Microsoft.Azure.Extensions",
-            "type": "DockerExtension",
-            "typeHandlerVersion": "1.0",
-            "autoUpgradeMinorVersion": true,
-            "settings": {}
-            }
+          ]
         }
-    ]
+      },
+      {
+        "apiVersion": "2017-04-01",
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[variables('nicName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+          "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "publicIPAddress": {
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                },
+                "subnet": {
+                  "id": "[variables('subnetRef')]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2017-03-30",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[variables('vmName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        ],
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[variables('vmSize')]"
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+              }
+            ]
+          },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": true
+            }
+          }
+        }
+      }
+    ],
+    "outputs": {
+      "hostname": {
+        "type": "string",
+        "value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
+      },
+      "sshCommand": {
+        "type": "string",
+        "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddressName')).dnsSettings.fqdn)]"
+      }
+    }
   }
