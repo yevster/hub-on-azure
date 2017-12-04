@@ -1,0 +1,102 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "adminUsername": {
+        "type": "string",
+        "metadata": {
+          "description": "Admin Username"
+        }
+      },
+      "adminPassword": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Admin Password"
+        }
+      },
+      "imagePublisher": {
+        "type": "string",
+        "defaultValue": "Canonical",
+        "metadata": {
+          "description": "Image Publisher"
+        }
+      },
+      "imageOffer": {
+        "type": "string",
+        "defaultValue": "UbuntuServer",
+        "metadata": {
+          "description": "Image Offer"
+        }
+      },
+      "imageSKU": {
+        "type": "string",
+        "defaultValue": "14.04.2-LTS",
+        "metadata": {
+          "description": "Image SKU"
+        }
+      },
+      "vmSize": {
+        "type": "string",
+        "defaultValue": "Standard_A0",
+         "metadata": {
+          "description": "VM Size"
+        }
+      },
+      "vmName": {
+        "type": "string",
+        "defaultValue": "BDSUbuntuVM",
+        "metadata": {
+          "description": "Vm Name"
+        }
+      }
+    },
+    "resources": [
+      {
+        "apiVersion": "2015-05-01-preview",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[parameters('vmName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+        ],
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[parameters('vmSize')]"
+          },
+          "osProfile": {
+            "computerName": "[parameters('vmName')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[parameters('imagePublisher')]",
+              "offer": "[parameters('imageOffer')]",
+              "sku": "[parameters('imageSKU')]",
+              "version": "latest"
+            }
+          }
+        }
+      },
+      {
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name": "[concat(parameters('vmName'),'/installhub')]",
+        "apiVersion": "2015-05-01-preview",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+        ],
+        "properties": {
+          "publisher": "Microsoft.Azure.Extensions",
+          "type": "CustomScript",
+          "typeHandlerVersion": "2.0",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+            "fileUris": [
+              "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/mongodb-on-ubuntu/mongo-install-ubuntu.sh"
+            ],
+            "commandToExecute": "sh mongo-install-ubuntu.sh"
+          }
+        }
+      }
+    ]
+  }
