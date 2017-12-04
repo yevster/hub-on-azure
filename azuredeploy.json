@@ -121,6 +121,14 @@
           "hardwareProfile": {
             "vmSize": "[variables('vmSize')]"
           },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('imagePublisher')]",
+              "offer": "[variables('imageOffer')]",
+              "sku": "[parameters('ubuntuOSVersion')]",
+              "version": "latest"
+            }
+        },
           "networkProfile": {
             "networkInterfaces": [
               {
