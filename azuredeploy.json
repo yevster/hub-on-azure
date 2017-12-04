@@ -44,7 +44,7 @@
       "publicIPAddressName": "myPublicIP",
       "publicIPAddressType": "Dynamic",
       "vmName": "MyUbuntuVM",
-      "vmSize": "Standard_A1",
+      "vmSize": "Standard_A8",
       "virtualNetworkName": "MyVNET",
       "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
       "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]"
@@ -142,7 +142,23 @@
             ]
           }
         }
-        }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vmName'),'/', variables('extensionName'))]",
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+              "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+            ],
+            "properties": {
+              "publisher": "Microsoft.Azure.Extensions",
+              "type": "DockerExtension",
+              "typeHandlerVersion": "1.0",
+              "autoUpgradeMinorVersion": true,
+              "settings": { }
+            }
+          }
     ],
     "outputs": {
       "hostname": {
