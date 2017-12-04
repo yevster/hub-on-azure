@@ -3,6 +3,7 @@ sudo apt-get update
 sudo apt-get -y install default-jre
 
 ## Install Hub
+cd /
 wget https://github.com/blackducksoftware/hub/archive/v4.3.1.tar.gz
 tar xvf v4.3.1.tar.gz
 
