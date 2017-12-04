@@ -159,6 +159,27 @@
               "autoUpgradeMinorVersion": true,
               "settings": { }
             }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vmName'),'/installhub')]",
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+              "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),'/extensions/DockerExtension')]"
+            ],
+            "properties": {
+              "publisher": "Microsoft.Azure.Extensions",
+              "type": "CustomScript",
+              "typeHandlerVersion": "2.0",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                  "fileUris": [
+                      "https://raw.githubusercontent.com/valancej/hub-on-azure/master/install-hub.sh"
+                  ],
+                  "commandToExecute": "sh install-hub.sh"
+               }
+            }
           }
     ],
     "outputs": {
