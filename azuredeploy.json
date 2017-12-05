@@ -43,7 +43,7 @@
       "publicIPAddressName": "myPublicIP",
       "publicIPAddressType": "Dynamic",
       "vmName": "hub-VM",
-      "vmSize": "Standard_A1",
+      "vmSize": "Standard_A4_v2",
       "virtualNetworkName": "MyVNET",
       "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
       "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]"
