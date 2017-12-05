@@ -22,12 +22,10 @@
       },
       "ubuntuOSVersion": {
         "type": "string",
-        "defaultValue": "16.04.0-LTS",
+        "defaultValue": "16.04.3-LTS",
         "allowedValues": [
           "12.04.5-LTS",
           "14.04.5-LTS",
-          "15.10",
-          "16.04.0-LTS"
         ],
         "metadata": {
           "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
@@ -175,7 +173,7 @@
               "autoUpgradeMinorVersion": true,
               "settings": {
                   "fileUris": [
-                      "https://raw.githubusercontent.com/valancej/hub-on-azure/master/install-hub.sh"
+                      "https://raw.githubusercontent.com/yevster/hub-on-azure/master/install-hub.sh"
                   ],
                   "commandToExecute": "sh install-hub.sh"
                }
