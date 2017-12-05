@@ -22,8 +22,8 @@ sudo apt-get -y install default-jre
 
 ## Install Hub
 cd /
-wget https://github.com/blackducksoftware/hub/archive/v4.3.1.tar.gz
-tar xvf v4.3.1.tar.gz
+sudo wget https://github.com/blackducksoftware/hub/archive/v4.3.1.tar.gz
+sudo tar xvf v4.3.1.tar.gz
 
 cd hub-4.3.1/docker-swarm
 sudo docker swarm init
