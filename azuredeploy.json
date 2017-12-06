@@ -36,15 +36,14 @@
       "imagePublisher": "Canonical",
       "imageOffer": "UbuntuServer",
       "nicName": "myVMNic",
-      "extensionName": "DockerExtension",
       "addressPrefix": "10.0.0.0/16",
       "subnetName": "Subnet",
       "subnetPrefix": "10.0.0.0/24",
-      "publicIPAddressName": "myPublicIP",
+      "publicIPAddressName": "azr-hub-public-ip",
       "publicIPAddressType": "Dynamic",
-      "vmName": "hub-VM",
+      "vmName": "azure-hub-vm",
       "vmSize": "Standard_A8_v2",
-      "virtualNetworkName": "MyVNET",
+      "virtualNetworkName": "azure-hub-netwrk",
       "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
       "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]"
     },
@@ -144,27 +143,10 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'),'/', variables('extensionName'))]",
-            "apiVersion": "2017-03-30",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-              "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-            ],
-            "properties": {
-              "publisher": "Microsoft.Azure.Extensions",
-              "type": "DockerExtension",
-              "typeHandlerVersion": "1.0",
-              "autoUpgradeMinorVersion": true,
-              "settings": { }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vmName'),'/installhub')]",
             "apiVersion": "2017-03-30",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-              "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'),'/extensions/DockerExtension')]"
             ],
             "properties": {
               "publisher": "Microsoft.Azure.Extensions",
