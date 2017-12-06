@@ -35,7 +35,7 @@
     "variables": {
       "imagePublisher": "Canonical",
       "imageOffer": "UbuntuServer",
-      "nicName": "myVMNic",
+      "nicName": "hubAzure",
       "addressPrefix": "10.0.0.0/16",
       "subnetName": "Subnet",
       "subnetPrefix": "10.0.0.0/24",
@@ -49,7 +49,7 @@
     },
     "resources": [
       {
-        "apiVersion": "2017-04-01",
+        "apiVersion": "2017-06-01",
         "type": "Microsoft.Network/publicIPAddresses",
         "name": "[variables('publicIPAddressName')]",
         "location": "[resourceGroup().location]",
@@ -61,7 +61,7 @@
         }
       },
       {
-        "apiVersion": "2017-04-01",
+        "apiVersion": "2017-06-01",
         "type": "Microsoft.Network/virtualNetworks",
         "name": "[variables('virtualNetworkName')]",
         "location": "[resourceGroup().location]",
@@ -82,7 +82,7 @@
         }
       },
       {
-        "apiVersion": "2017-04-01",
+        "apiVersion": "2017-06-01",
         "type": "Microsoft.Network/networkInterfaces",
         "name": "[variables('nicName')]",
         "location": "[resourceGroup().location]",
@@ -146,8 +146,6 @@
             "name": "[concat(variables('vmName'),'/installhub')]",
             "apiVersion": "2017-03-30",
             "location": "[resourceGroup().location]",
-            "dependsOn": [
-            ],
             "properties": {
               "publisher": "Microsoft.Azure.Extensions",
               "type": "CustomScript",
