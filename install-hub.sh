@@ -14,6 +14,11 @@ sudo apt-get update
 sudo apt-get install docker-ce=17.09.0~ce-0~ubuntu
 sudo service docker start
 
+## Install docker compose
+sudo curl -L https://github.com/docker/compose/releases/download/1.17.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+cd /usr/bin
+sudo ln -s /usr/local/bin/docker-compose
+
 
 ## Install Java
 sudo apt-get -y install default-jre
@@ -23,6 +28,5 @@ cd /
 sudo wget https://github.com/blackducksoftware/hub/archive/v4.3.1.tar.gz
 sudo tar xvf v4.3.1.tar.gz
 
-cd hub-4.3.1/docker-swarm
-sudo docker swarm init
-sudo docker stack deploy -c docker-compose.yml hub
+cd hub-4.3.1/docker-compose
+sudo docker-compose up
