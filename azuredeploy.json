@@ -146,6 +146,9 @@
             "name": "[concat(variables('vmName'),'/installhub')]",
             "apiVersion": "2017-03-30",
             "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+            ],
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
                 "type": "CustomScript",
@@ -157,10 +160,7 @@
                     ],
                     "commandToExecute": "sh install-hub.sh"
                 }
-            },
-            "dependsOn": [
-              "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-            ]
+            }
         }
     ],
     "outputs": {
