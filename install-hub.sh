@@ -31,6 +31,7 @@ sudo apt-get -y install default-jre
 cd /
 sudo wget https://github.com/blackducksoftware/hub/archive/v${HUB_VERSION}.tar.gz
 sudo tar xvf v${HUB_VERSION}.tar.gz
+sudo rm v${HUB_VERSION}.tar.gz
 
 echo 
 cd /hub-${HUB_VERSION}/docker-compose
