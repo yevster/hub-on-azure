@@ -158,7 +158,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/yevster/hub-on-azure/master/install-hub.sh"
                     ],
-                    "commandToExecute": "sh install-hub.sh"
+                    "commandToExecute": "[concat('sh install-hub.sh ', reference(variables('publicIPAddressName')).dnsSettings.fqdn, ' 4.3.1')]"
                 }
             }
         }

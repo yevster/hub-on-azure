@@ -1,3 +1,6 @@
+HOST_URL=$1
+HUB_VERSION=$2
+
 ## Install Docker (https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#set-up-the-repository)
 sudo apt-get remove docker docker-engine docker.io
 sudo apt-get install -y \
@@ -26,8 +29,11 @@ sudo apt-get -y install default-jre
 
 ## Install Hub
 cd /
-sudo wget https://github.com/blackducksoftware/hub/archive/v4.3.1.tar.gz
-sudo tar xvf v4.3.1.tar.gz
+sudo wget https://github.com/blackducksoftware/hub/archive/v${HUB_VERSION}.tar.gz
+sudo tar xvf v${HUB_VERSION}.tar.gz
 
-cd hub-4.3.1/docker-compose
+echo 
+cd /hub-${HUB_VERSION}/docker-compose
+echo "sed -i \"s/PUBLIC_HUB_WEBSERVER_HOST\=.*/PUBLIC_HUB_WEBSERVER_HOST\=\$1/g\" /hub-${HUB_VERSION}/docker-compose/hub-webserver.env" | sudo tee /set_hub_url.sh
+sudo -s source /set_hub_url.sh $HOST_URL
 sudo docker-compose up
