@@ -24,16 +24,18 @@
             "type": "string",
             "defaultValue": "16.04-LTS",
             "allowedValues": [
+                "14.04-LTS",
                 "16.04-LTS"
             ],
             "metadata": {
                 "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
             }
         },
-        "hubVersion": {
+        "hubVersion:": {
             "type": "string",
-            "defaultValue": "4.3.1",
+            "defaultValue": "4.4.0",
             "allowedValues": [
+                "4.4.0",
                 "4.3.1"
             ],
             "metadata": {
